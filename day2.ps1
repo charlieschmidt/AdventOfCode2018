@@ -34,7 +34,7 @@ process {
             $Comparison = Compare-Object ($Line -split '')  ($OtherLine -split '') -SyncWindow 0 -IncludeEqual
             if (($Comparison | Where-Object {$_.SideIndicator -ne '=='}).count -eq 2) {
                 
-                $global:PartTwo =  $Comparison 
+                $PartTwo =  $Comparison 
                 $line
                 $OtherLine
                 $Same = ($Comparison | Where-Object {$_.SideIndicator -eq '=='} | Select-Object -Expand InputObject) -join ''

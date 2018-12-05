@@ -49,7 +49,7 @@ process {
         [pscustomobject]@{
             Guard = $_.Key
             MinutesAsleep = ($_.Value.Values | Measure-Object -sum).Sum
-        }
+        } | Write-Output
     } | Sort-Object -Descending -Property MinutesAsleep | Select-Object -First 1 -ExpandProperty Guard
 
     $GuardSchedule = $GuardsSchedule[$GuardMostAsleep]

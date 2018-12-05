@@ -14,10 +14,10 @@ process {
             Width = [int]$Matches.Width
             Height = [int]$Matches.Height
             Id = $Matches.Id
-        }
+        } | Write-Output
     }
     
-    $global:Map = @{}
+    $Map = @{}
 
     foreach ($Box in $InputObjects) {
         for ($i = $Box.LeftOffset; $i -lt ($Box.LeftOffset + $Box.Width); $i++) {
