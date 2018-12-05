@@ -1,47 +1,41 @@
 [cmdletbinding()]
 param(
-    [string[]]$InputLines = (Get-Content "day5.input")
+    [string]$InputString = (Get-Content "day5.input")
 )
 
 begin {
-}
-
-process {
-
-    function React {
-        param($Characters)
+    function Optimize-Polymer {
+        param([string]$PolymerString)
+        
         process {
             $stack = new-object System.Collections.Stack
 
-            foreach ($c in $Characters) {
-                if ($Stack.Count -gt 0 -and [Math]::Abs(([byte][char]$stack.Peek()) - ([byte][char]$c)) -eq 32) {
+            foreach ($c in $PolymerString.ToCharArray()) {
+                $i = [byte][char]$c
+                if ($Stack.Count -gt 0 -and [Math]::Abs($stack.Peek() - $i) -eq 32) {
                     $Stack.Pop() | Out-Null
                 } else {
-                    $Stack.Push($c)
+                    $Stack.Push($i)
                 }
             }
 
             $Stack.Count | Write-Output    
         }
     }
+}
 
-    $InputCharacters = $InputLines[0].ToCharArray()
-    $Part1 = React -Characters $InputCharacters
+process {
+    $Part1 = Optimize-Polymer -PolymerString $InputString
 
     Write-Output "Part 1: $($Part1)"
 
-    $Part2 = $InputLines[0].ToLower().ToCharArray() | Select-Object -Unique | foreach-object {
-        $TryCharacter = $_
-        $TryCharactersLeft = ($InputLines[0] -replace $TryCharacter,'').ToCharArray()
 
-        $TryLength = React -Characters $TryCharactersLeft
-
-        [PSCustomObject]@{
-            Character = $TryCharacter
-            Length = $TryLength
+    $Part2 = $InputString.ToLower().ToCharArray() | Select-Object -Unique | foreach-object {
+        [pscustomobject]@{
+            Character = $_
+            Length = Optimize-Polymer -PolymerString ($InputString -replace $_,'')
         } | Write-Output
-    } | Sort-Object -Property Length | Select-Object -First 1 -ExpandProperty Length
-    
+    } | Sort-Object -Property Length | Select-Object -First 1 -ExpandProperty Length   
     
     Write-Output "Part 2: $($Part2)"
 }
